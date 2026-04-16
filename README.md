@@ -27,3 +27,11 @@ uvicorn app.main:app --reload
 打开：
 - `http://127.0.0.1:8000`（简单页面）
 - `http://127.0.0.1:8000/docs`（Swagger）
+
+## 开发自检
+
+每次改完模块可运行一次：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\\check.ps1
+```

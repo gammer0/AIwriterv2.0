@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api")
 
 @router.post("/generate", response_model=GenerateResponse)
 def generate(req: GenerateRequest) -> GenerateResponse:
-    result = run_workflow(req.text)
+    result = run_workflow(req.text, iterations=req.iterations)
     return GenerateResponse(**result)
 
 

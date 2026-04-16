@@ -4,15 +4,18 @@ from typing import Any, Dict
 
 from agents.consistency_guard import ConsistencyGuardAgent
 from agents.creative_guide import CreativeGuideAgent
-from agents.creative_refine import CreativeRefineAgent
 from agents.semantic_split import SemanticSplitAgent
 from agents.storyboard_prompt import StoryboardPromptAgent
+from workflows.creative_loop import run_creative_loop
 
 
-def run_workflow(text: str) -> Dict[str, Any]:
+def run_workflow(text: str, *, iterations: int = 1) -> Dict[str, Any]:
     guide = CreativeGuideAgent().run(text).data
-    refined = CreativeRefineAgent().run(text).data
-    scenes = SemanticSplitAgent().run(refined.get("refined_text", "")).data.get("scenes", [])
+
+    loop = run_creative_loop(text, guide=guide.get("guide", {}), iterations=iterations)
+    final_text = loop.get("final_text", "").strip()
+
+    scenes = SemanticSplitAgent().run(final_text).data.get("scenes", [])
     consistency = ConsistencyGuardAgent().run(text, scenes=scenes).data.get("consistency", {})
     storyboard = StoryboardPromptAgent().run(scenes=scenes, consistency=consistency).data
 
@@ -22,7 +25,7 @@ def run_workflow(text: str) -> Dict[str, Any]:
         "meta": {
             "agents": {
                 "guide": guide.get("guide", {}),
-                "refine_notes": refined.get("refine_notes", []),
+                "creative_loop": loop,
             }
         },
     }

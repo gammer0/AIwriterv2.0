@@ -53,7 +53,7 @@ class CreativeGuideAgent(Agent):
 
 def _load_system_prompt(path: Path) -> str:
     raw = path.read_text(encoding="utf-8")
-    m = re.search(r"BEGIN_SYSTEM_PROMPT\\s*(.*?)\\s*END_SYSTEM_PROMPT", raw, flags=re.DOTALL)
+    m = re.search(r"BEGIN_SYSTEM_PROMPT\s*(.*?)\s*END_SYSTEM_PROMPT", raw, flags=re.DOTALL)
     if not m:
         raise ValueError(f"System prompt markers not found in {path}")
     return m.group(1).strip()
