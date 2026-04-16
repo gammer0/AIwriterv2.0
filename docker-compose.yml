@@ -1,0 +1,12 @@
+services:
+  aibianju:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # 容器内默认允许真实 LLM 调用；如只想离线运行可改为 1
+      DISABLE_LLM: "0"
+    restart: unless-stopped
+

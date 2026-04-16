@@ -24,14 +24,16 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(404, {"error": "not found"})
             return
 
+        # Always read body to avoid connection resets on some platforms when returning early.
+        length = int(self.headers.get("Content-Length") or "0")
+        body = self.rfile.read(length).decode("utf-8") if length > 0 else ""
+
         if self.expected_auth is not None:
             got = self.headers.get("Authorization")
             if got != self.expected_auth:
                 self._send_json(401, {"error": "unauthorized"})
                 return
 
-        length = int(self.headers.get("Content-Length") or "0")
-        body = self.rfile.read(length).decode("utf-8")
         req = json.loads(body) if body else {}
 
         user_content = ""
