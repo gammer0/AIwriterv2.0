@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+$env:DISABLE_LLM = "1"
+
 Write-Host "==> Python syntax check (py_compile)"
 python -m py_compile `
   app\main.py `
@@ -16,6 +18,7 @@ python -m py_compile `
   agents\storyboard_prompt.py `
   agents\creator.py `
   agents\optimizer.py `
+  agents\storyboard_prompt.py `
   llm\relay_proxy.py `
   llm\client.py `
   scripts\llm_smoke_test.py

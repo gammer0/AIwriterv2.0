@@ -34,7 +34,7 @@ class OptimizerAgent(Agent):
         raw: Optional[Dict[str, Any]] = None
         llm_error: Optional[str] = None
 
-        if settings.llm_relay_base_url:
+        if settings.llm_relay_base_url and not settings.disable_llm:
             try:
                 client = LLMClient.build(
                     base_url=settings.llm_relay_base_url,
@@ -55,7 +55,7 @@ class OptimizerAgent(Agent):
             data={
                 **result,
                 "llm": {
-                    "enabled": bool(settings.llm_relay_base_url),
+                    "enabled": bool(settings.llm_relay_base_url) and not settings.disable_llm,
                     "model": settings.llm_model,
                     "error": llm_error,
                     "raw": raw,

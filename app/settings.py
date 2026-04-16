@@ -20,6 +20,7 @@ class Settings:
     llm_relay_base_url: str
     llm_relay_api_key: Optional[str]
     llm_model: Optional[str]
+    disable_llm: bool
 
 
 def get_settings() -> Settings:
@@ -29,10 +30,11 @@ def get_settings() -> Settings:
     api_key = os.getenv("LLM_RELAY_API_KEY")
     model_raw = os.getenv("LLM_MODEL")
     model = _strip_quotes(model_raw) if model_raw else None
+    disable_llm = os.getenv("DISABLE_LLM", "").strip().lower() in {"1", "true", "yes", "on"}
     return Settings(
         app_env=app_env,
         llm_relay_base_url=base_url,
         llm_relay_api_key=api_key,
         llm_model=model,
+        disable_llm=disable_llm,
     )
-
