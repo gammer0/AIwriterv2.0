@@ -11,8 +11,6 @@
 ## 本地运行（Windows / PowerShell）
 
 ```powershell
-python -m venv .venv
-.\\.venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
 
 Copy-Item .env.example .env
@@ -21,6 +19,32 @@ uvicorn app.main:app --reload
 
 打开：`http://127.0.0.1:8000/`
 
+
+## API
+
+### `POST /api/generate`
+
+请求 JSON：
+
+```json
+{
+  "text": "你的创意文本",
+  "iterations": 2
+}
+```
+
+响应要点：
+- `meta.agents.creative_loop.final_text`：最终剧本文本
+- `meta.agents.storyboard_yaml`：可下载的 YAML 字符串
+
+
+## 脚本一键生成结果
+
+直接在项目根目录运行（会写出 `storyboard.yaml`）：
+
+```powershell
+python scripts\\generate_result.py --text "你的创意文本" --iterations 2 --yaml-out storyboard.yaml
+```
 ## Docker 运行
 
 ### 方式一：docker build/run
@@ -46,39 +70,3 @@ docker compose up --build
 - `LLM_RELAY_API_KEY`：密钥
 - `LLM_MODEL`：模型名（支持带引号）
 - `DISABLE_LLM`：`1`/`true` 则禁用真实 LLM 调用（离线 fallback），默认 `0`
-
-## API
-
-### `POST /api/generate`
-
-请求 JSON：
-
-```json
-{
-  "text": "你的创意文本",
-  "iterations": 2
-}
-```
-
-响应要点：
-- `meta.agents.creative_loop.final_text`：最终剧本文本
-- `meta.agents.storyboard_yaml`：可下载的 YAML 字符串
-
-## 开发自检
-
-每次改完模块运行：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\\check.ps1
-```
-
-注：自检脚本会设置 `DISABLE_LLM=1`，避免测试时触发真实联网调用。
-
-## 脚本一键生成结果
-
-直接在项目根目录运行（会写出 `storyboard.yaml`）：
-
-```powershell
-python scripts\\generate_result.py --text "你的创意文本" --iterations 2 --yaml-out storyboard.yaml
-```
-
